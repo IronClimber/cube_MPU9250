@@ -10,7 +10,8 @@
 #include "math.h"
 
 Cube3d box;
-XYZ_point At, Bt, Ct, Dt, Et, Ft, Gt, Ht;
+float rxy, rzy, rzx;
+float s_angle_x, s_angle_y, s_angle_z;
 
 /*
        width
@@ -36,40 +37,60 @@ void Cube3d_Init(int16_t width, int16_t depth, int16_t heigth) {
 	SetXYZ(width/2, -depth/2, heigth/2, &box.F);
 	SetXYZ(width/2, -depth/2, -heigth/2, &box.G);
 	SetXYZ(-width/2, -depth/2, -heigth/2, &box.H);
-    At = box.A;
-    Bt = box.B;
-    Ct = box.C;
-    Dt = box.D;
-    Et = box.E;
-    Ft = box.F;
-    Gt = box.G;
-    Ht = box.H;
 
+	rxy = sqrt(width*width/4 + depth*depth/4);
+	rzy = sqrt(heigth*heigth/4 + depth*depth/4);
+	rzx = sqrt(width*width/4 + heigth*heigth/4);
+
+	//float ang = atan2f(point->y,point->x);
 }
 
 void SetXYZ(int32_t x, int32_t y, int32_t z, XYZ_point* point) {
+
 	point->x = x;
 	point->y = y;
 	point->z = z;
-	LCD_Printf("(%d,%d,%d)\n",x,y,z);
+	point->start_x = x;
+	point->start_y = y;
+	point->start_z = z;
+	//LCD_Printf("(%d,%d,%d)\n",x,y,z);
 }
 
 void Draw3dCube(uint16_t color) {
 
-	DrawEdge(&At, &Bt, color);
-	DrawEdge(&Bt, &Ct, color);
-	DrawEdge(&Ct, &Dt, color);
-	DrawEdge(&Dt, &At, color);
+	DrawEdge(&box.A, &box.B, color);
+	DrawEdge(&box.B, &box.C, color);
+	DrawEdge(&box.C, &box.D, color);
+	DrawEdge(&box.D, &box.A, color);
 
-	DrawEdge(&Et, &Ft, color);
-	DrawEdge(&Ft, &Gt, color);
-	DrawEdge(&Gt, &Ht, color);
-	DrawEdge(&Ht, &Et, color);
+	DrawEdge(&box.E, &box.F, RED);
+	DrawEdge(&box.F, &box.G, RED);
+	DrawEdge(&box.G, &box.H, RED);
+	DrawEdge(&box.H, &box.E, RED);
 
-	DrawEdge(&At, &Et, color);
-	DrawEdge(&Bt, &Ft, color);
-	DrawEdge(&Ct, &Gt, color);
-	DrawEdge(&Dt, &Ht, color);
+	DrawEdge(&box.A, &box.E, BLUE);
+	DrawEdge(&box.B, &box.F, BLUE);
+	DrawEdge(&box.C, &box.G, BLUE);
+	DrawEdge(&box.D, &box.H, BLUE);
+
+}
+
+void Clean3dCube(uint16_t color) {
+
+	DrawEdge(&box.A, &box.B, color);
+	DrawEdge(&box.B, &box.C, color);
+	DrawEdge(&box.C, &box.D, color);
+	DrawEdge(&box.D, &box.A, color);
+
+	DrawEdge(&box.E, &box.F, color);
+	DrawEdge(&box.F, &box.G, color);
+	DrawEdge(&box.G, &box.H, color);
+	DrawEdge(&box.H, &box.E, color);
+
+	DrawEdge(&box.A, &box.E, color);
+	DrawEdge(&box.B, &box.F, color);
+	DrawEdge(&box.C, &box.G, color);
+	DrawEdge(&box.D, &box.H, color);
 
 }
 
@@ -87,38 +108,51 @@ void GetRealXY(XYZ_point* k, int16_t* x, int16_t* y) {
 
 void SetCubePosition(float x_angle, float y_angle, float z_angle) {
 	LCD_SetCursor(0,0);
-	SetNewPointValue(&box.A, &At, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.B, &Bt, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.C, &Ct, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.D, &Dt, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.E, &Et, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.F, &Ft, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.G, &Gt, x_angle, y_angle, z_angle);
-	SetNewPointValue(&box.H, &Ht, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.A, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.B, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.C, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.D, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.E, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.F, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.G, x_angle, y_angle, z_angle);
+	SetNewPointValue(&box.H, x_angle, y_angle, z_angle);
 }
 
-void SetNewPointValue(XYZ_point* real_point, XYZ_point* point, float x_angle, float y_angle, float z_angle) {
-	//SetOneAxisNewPosition(point, x_angle);
+void SetNewPointValue(XYZ_point* point, float x_angle, float y_angle, float z_angle) {
+
+	int32_t new_x = point->start_x;
+	int32_t new_y = point->start_y;
+	int32_t new_z = point->start_z;
 
 	//x axis
-	float r = sqrt((real_point->z)*(real_point->z)+(real_point->y)*(real_point->y));
-	float x_axis_angle = atan2f(real_point->z,real_point->y)+x_angle;
-	point->y = (int32_t) (cos(x_axis_angle)*r);
-	point->z = (int32_t) (sin(x_axis_angle)*r);
-    LCD_Printf("r = %6.2f x-a = %6.2", r, x_axis_angle);
+	float rx = sqrt(new_z*new_z+new_y*new_y);
+	float x_axis_angle = atan2f(new_z, new_y)+x_angle;
+	new_y = (int32_t) (cosf(x_axis_angle)*rx);
+	new_z = (int32_t) (sinf(x_axis_angle)*rx);
+    //LCD_Printf("r = %6.2f x-a = %6.2", rxy, x_axis_angle);
 
 	//y axis
-	r = sqrt((real_point->z)*(real_point->z)+(real_point->x)*(real_point->x));
-	float y_axis_angle = atan2f(real_point->z,real_point->x)+y_angle;
-	point->x = (int32_t) (cos(y_axis_angle)*r);
-	point->z = (int32_t) (sin(y_axis_angle)*r);
+	float ry = sqrt(new_z*new_z+new_x*new_x);
+	float y_axis_angle = atan2f(new_z, new_x)+y_angle;
+	new_x = (int32_t) (cosf(y_axis_angle)*ry);
+	new_z = (int32_t) (sinf(y_axis_angle)*ry);
+	//LCD_Printf("r = %6.2f x-a = %6.2f\n", rzx, point->start_angle_y);
 
 	//z axis
-	r = sqrt((real_point->y)*(real_point->y)+(real_point->x)*(real_point->x));
-	float z_axis_angle = atan2f(real_point->y,real_point->x)+z_angle;
-	point->x = (int32_t) (cos(z_axis_angle)*r);
-	point->y = (int32_t) (sin(z_axis_angle)*r);
-	LCD_Printf("(%d,%d,%d)\n",point->x,point->y,point->z);
+	//r = sqrt((point->y)*(point->y)+(point->x)*(point->x));
+	float rz = sqrt(new_x*new_y+new_y*new_y);
+	float z_axis_angle = atan2f(new_x, new_y)+z_angle;
+	new_y = (int32_t) (cosf(z_axis_angle)*rz);
+	new_x = (int32_t) (sinf(z_axis_angle)*rz);
+	//LCD_Printf("(%d,%d,%d) ang = %d\n",point->x,point->y,point->z, point->start_angle);
+
+	point->x = new_x;
+	point->y = new_y;
+	point->z = new_z;
+
+
+
+
 }
 /*
 void SetOneAxisNewPosition(XYZ_point* point, float angle) {

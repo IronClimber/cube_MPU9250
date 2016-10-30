@@ -103,11 +103,15 @@ int main(void)
   float i = 0;
   while (1)
   {
-	  i += M_PI/10;
-	  Draw3dCube(BLACK);
-	  SetCubePosition(i, 0, 0);
+	  //LCD_DrawLine(SCALE_X0, 70, SCALE_X0, Y_BORDER-40, YELLOW);
+	  //LCD_DrawLine(20, SCALE_Y0, X_BORDER-20, SCALE_Y0, YELLOW);
+	  //LCD_DrawLine(20, SCALE_Y0-60, X_BORDER-20, SCALE_Y0-60, YELLOW);
+	  //LCD_DrawLine(20, SCALE_Y0+60, X_BORDER-20, SCALE_Y0+60, YELLOW);
+	  i += M_PI/32;
+	  Clean3dCube(BLACK);
+	  SetCubePosition(0, 0, i);
 	  Draw3dCube(CUBE_COLOR);
-	  HAL_Delay(250);
+	  HAL_Delay(200);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
