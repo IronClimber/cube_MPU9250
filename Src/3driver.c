@@ -28,7 +28,7 @@ float s_angle_x, s_angle_y, s_angle_z;
 
 void Cube3d_Init(int16_t width, int16_t depth, int16_t heigth) {
 
-	SetXYZ(0, 0, 0, &box.O);
+	SetXYZ(0, 0, 0, &box.centre);
 	SetXYZ(-width/2, depth/2, heigth/2, &box.A);
 	SetXYZ(width/2, depth/2, heigth/2, &box.B);
 	SetXYZ(width/2, depth/2, -heigth/2, &box.C);
@@ -133,17 +133,17 @@ void SetNewPointValue(XYZ_point* point, float x_angle, float y_angle, float z_an
 
 	//y axis
 	float ry = sqrt(new_z*new_z+new_x*new_x);
-	float y_axis_angle = atan2f(new_z, new_x)+y_angle;
-	new_x = (int32_t) (cosf(y_axis_angle)*ry);
-	new_z = (int32_t) (sinf(y_axis_angle)*ry);
+	float y_axis_angle = atan2f(new_x, new_z)+y_angle;
+	new_z = (int32_t) (cosf(y_axis_angle)*ry);
+	new_x = (int32_t) (sinf(y_axis_angle)*ry);
 	//LCD_Printf("r = %6.2f x-a = %6.2f\n", rzx, point->start_angle_y);
 
 	//z axis
 	//r = sqrt((point->y)*(point->y)+(point->x)*(point->x));
 	float rz = sqrt(new_x*new_y+new_y*new_y);
-	float z_axis_angle = atan2f(new_x, new_y)+z_angle;
-	new_y = (int32_t) (cosf(z_axis_angle)*rz);
-	new_x = (int32_t) (sinf(z_axis_angle)*rz);
+	float z_axis_angle = atan2f(new_y, new_x)+z_angle;
+	new_x = (int32_t) (cosf(z_axis_angle)*rz);
+	new_y = (int32_t) (sinf(z_axis_angle)*rz);
 	//LCD_Printf("(%d,%d,%d) ang = %d\n",point->x,point->y,point->z, point->start_angle);
 
 	point->x = new_x;

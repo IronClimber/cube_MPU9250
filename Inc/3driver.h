@@ -40,7 +40,7 @@ typedef struct {
 	XYZ_point F;
 	XYZ_point G;
 	XYZ_point H;
-	XYZ_point O;
+	XYZ_point centre;
 	float r;
 } Cube3d;
 

@@ -109,7 +109,7 @@ int main(void)
 	  //LCD_DrawLine(20, SCALE_Y0+60, X_BORDER-20, SCALE_Y0+60, YELLOW);
 	  i += M_PI/32;
 	  Clean3dCube(BLACK);
-	  SetCubePosition(0, 0, i);
+	  SetCubePosition(i, 0, 0);
 	  Draw3dCube(CUBE_COLOR);
 	  HAL_Delay(200);
   /* USER CODE END WHILE */
