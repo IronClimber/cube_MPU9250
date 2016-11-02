@@ -47,6 +47,9 @@ typedef struct {
 void Cube3d_Init(int16_t width, int16_t depth, int16_t heigth);
 void SetXYZ(int32_t x, int32_t y, int32_t z, XYZ_point* point);
 void Draw3dCube(uint16_t color);
+void Clean3DCube(uint16_t color);
+void DrawTarget(XYZ_point* k1, uint16_t color);
+void MoveY_Abs(int32_t y_move);
 void DrawEdge(XYZ_point* k1, XYZ_point* k2, uint16_t color);
 void GetRealXY(XYZ_point* k, int16_t* x, int16_t* y);
 

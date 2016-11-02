@@ -91,9 +91,9 @@ int main(void)
   I2Cdev_init(&hi2c1);
 
   Cube3d_Init(CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
-  Draw3dCube(CUBE_COLOR);
+  Draw3dCube(RED);
 
-  HAL_Delay(2000);
+ // HAL_Delay(2000);
 
 
   /* USER CODE END 2 */
@@ -101,16 +101,21 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   float i = 0;
+  int32_t j = -60;
+  LCD_DrawLine(SCALE_X0, 70, SCALE_X0, Y_BORDER-40, YELLOW);
+  LCD_DrawLine(20, SCALE_Y0, X_BORDER-20, SCALE_Y0, YELLOW);
+  LCD_DrawLine(20, SCALE_Y0-60, X_BORDER-20, SCALE_Y0-60, YELLOW);
+  LCD_DrawLine(20, SCALE_Y0+60, X_BORDER-20, SCALE_Y0+60, YELLOW);
   while (1)
   {
-	  //LCD_DrawLine(SCALE_X0, 70, SCALE_X0, Y_BORDER-40, YELLOW);
-	  //LCD_DrawLine(20, SCALE_Y0, X_BORDER-20, SCALE_Y0, YELLOW);
-	  //LCD_DrawLine(20, SCALE_Y0-60, X_BORDER-20, SCALE_Y0-60, YELLOW);
-	  //LCD_DrawLine(20, SCALE_Y0+60, X_BORDER-20, SCALE_Y0+60, YELLOW);
+	  j += 1;
 	  i += M_PI/32;
 	  Clean3dCube(BLACK);
-	  SetCubePosition(i, 0, 0);
+	  SetCubePosition(i/2, i, i/4);
+	  //MoveY_Abs(j);
 	  Draw3dCube(CUBE_COLOR);
+
+	  LCD_Printf("%d %6.2f*Pi\n", j, i/M_PI);
 	  HAL_Delay(200);
   /* USER CODE END WHILE */
 
