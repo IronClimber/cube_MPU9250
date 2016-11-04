@@ -40,6 +40,7 @@
 #include "MPU9250.h"
 #include "3driver.h"
 #include "math.h"
+#include "MadgwickAHRS.h"
 
 /* USER CODE END Includes */
 
@@ -68,6 +69,14 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
+	int8_t com_rslt;
+
+	float ax, ay, az;
+	float gx, gy, gz;
+	float mx, my, mz;
+
+	uint32_t last_time, current_time;
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -93,6 +102,17 @@ int main(void)
   Cube3d_Init(CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
   Draw3dCube(RED);
 
+  LCD_Printf("Connecting to MPU9250...\n");
+  //while(!MPU9250_testConnection());
+  MPU9250_initialize();
+  MPU9250_setFullScaleGyroRange(MPU9250_GYRO_FS_2000); // 2000 град/сек
+  MPU9250_setFullScaleAccelRange(MPU9250_ACCEL_FS_2); // 2g
+  LCD_Printf("Connection successful!\n\n");
+
+  Madgwick_init();
+  Cube3d_Init(CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
+  last_time = HAL_GetTick();
+
  // HAL_Delay(2000);
 
 
@@ -100,23 +120,19 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  float i = 0;
-  int32_t j = -60;
-  LCD_DrawLine(SCALE_X0, 70, SCALE_X0, Y_BORDER-40, YELLOW);
-  LCD_DrawLine(20, SCALE_Y0, X_BORDER-20, SCALE_Y0, YELLOW);
-  LCD_DrawLine(20, SCALE_Y0-60, X_BORDER-20, SCALE_Y0-60, YELLOW);
-  LCD_DrawLine(20, SCALE_Y0+60, X_BORDER-20, SCALE_Y0+60, YELLOW);
+
   while (1)
   {
-	  j += 1;
-	  i += M_PI/32;
-	  Clean3dCube(BLACK);
-	  SetCubePosition(i/2, i, i/4);
-	  //MoveY_Abs(j);
-	  Draw3dCube(CUBE_COLOR);
-
-	  LCD_Printf("%d %6.2f*Pi\n", j, i/M_PI);
-	  HAL_Delay(200);
+	  MPU9250_getMotion9Real(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+	  current_time = HAL_GetTick();
+	  Madgwick_update(gx,gy,gz,ax,ay,az,mx,my,mz, (current_time -last_time)/1000.0);
+	  last_time = current_time;
+      LCD_SetCursor(0,310);
+      LCD_Printf("Madgwick: P: %5.1f R: %5.1f Y: %5.1f", Madgwick_getPitch(), Madgwick_getRoll(), Madgwick_getYaw());
+      Clean3dCube(BLACK);
+      SetCubePosition(Madgwick_getPitchRadians(), Madgwick_getRollRadians(), Madgwick_getYawRadians());
+      Draw3dCube(CUBE_COLOR);
+      HAL_Delay(10);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */

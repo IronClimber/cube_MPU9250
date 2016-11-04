@@ -10,8 +10,6 @@
 #include "math.h"
 
 Cube3d box;
-float rxy, rzy, rzx;
-float s_angle_x, s_angle_y, s_angle_z;
 
 /*
        width
@@ -38,9 +36,6 @@ void Cube3d_Init(int16_t width, int16_t depth, int16_t heigth) {
 	SetXYZ(width/2, -depth/2, -heigth/2, &box.G);
 	SetXYZ(-width/2, -depth/2, -heigth/2, &box.H);
 
-	rxy = sqrt(width*width/4 + depth*depth/4);
-	rzy = sqrt(heigth*heigth/4 + depth*depth/4);
-	rzx = sqrt(width*width/4 + heigth*heigth/4);
 
 	//float ang = atan2f(point->y,point->x);
 }
@@ -70,8 +65,8 @@ void Draw3dCube(uint16_t color) {
 
 	DrawEdge(&box.A, &box.E, BLUE);
 	DrawEdge(&box.B, &box.F, BLUE);
-	DrawEdge(&box.C, &box.G, BLUE);
-	DrawEdge(&box.D, &box.H, BLUE);
+	DrawEdge(&box.C, &box.G, YELLOW);
+	DrawEdge(&box.D, &box.H, YELLOW);
 
 }
 
@@ -160,7 +155,7 @@ void SetNewPointValue(XYZ_point* point, float x_angle, float y_angle, float z_an
 	//z axis
 	//r = sqrt((point->y)*(point->y)+(point->x)*(point->x));
 	float rz = sqrt(new_x*new_x+new_y*new_y);
-	float z_axis_angle = atan2f(new_y, new_x)+z_angle;
+	float z_axis_angle = atan2f(new_y, new_x)-z_angle;
 	new_x = (int32_t) (cosf(z_axis_angle)*rz);
 	new_y = (int32_t) (sinf(z_axis_angle)*rz);
 	//LCD_Printf("(%d,%d,%d) ang = %d\n",point->x,point->y,point->z, point->start_angle);

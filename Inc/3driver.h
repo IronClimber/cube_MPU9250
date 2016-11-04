@@ -8,9 +8,9 @@
 #ifndef DRIVER3D_H_
 #define DRIVER3D_H_
 
-#define CUBE_WIDTH  100
-#define CUBE_DEPTH  60
-#define CUBE_HEIGTH 120
+#define CUBE_WIDTH  140
+#define CUBE_DEPTH  100
+#define CUBE_HEIGTH 40
 
 #define CUBE_COLOR GREEN
 
