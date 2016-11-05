@@ -8,11 +8,10 @@
 #ifndef DRIVER3D_H_
 #define DRIVER3D_H_
 
-#define CUBE_WIDTH  140
-#define CUBE_DEPTH  100
-#define CUBE_HEIGTH 40
+/*
 
-#define CUBE_COLOR GREEN
+
+#define CUBE_COLOR GREEN*/
 
 #define X_BORDER 240
 #define Y_BORDER 320
@@ -22,38 +21,67 @@
 
 #define PERSPECTIVE_COEFICIENT_SCALE 200
 
+//Object3d struct properties
+#define OBJECT_VERTEX_QUANTITY_MAX 50
+#define OBJECT_EDGE_QUANTITY_MAX 50
+
 typedef struct {
 	int32_t x;
 	int32_t y;
 	int32_t z;
-	int32_t start_x;
-	int32_t start_y;
-	int32_t start_z;
 } XYZ_point;
 
 typedef struct {
-	XYZ_point A;
-	XYZ_point B;
-	XYZ_point C;
-	XYZ_point D;
-	XYZ_point E;
-	XYZ_point F;
-	XYZ_point G;
-	XYZ_point H;
+	XYZ_point* v1;
+	XYZ_point* v2;
+	uint16_t color;
+} Edge;
+
+typedef struct {
+
 	XYZ_point centre;
-	float r;
-} Cube3d;
 
-void Cube3d_Init(int16_t width, int16_t depth, int16_t heigth);
-void SetXYZ(int32_t x, int32_t y, int32_t z, XYZ_point* point);
-void Draw3dCube(uint16_t color);
-void Clean3DCube(uint16_t color);
-void DrawTarget(XYZ_point* k1, uint16_t color);
-void MoveY_Abs(int32_t y_move);
-void DrawEdge(XYZ_point* k1, XYZ_point* k2, uint16_t color);
-void GetRealXY(XYZ_point* k, int16_t* x, int16_t* y);
+	uint8_t vertex_quantity;
+	uint8_t edge_quantity;
 
-void SetCubePosition(float x_angle, float y_angle, float z_angle);
+	XYZ_point vertex_start[OBJECT_VERTEX_QUANTITY_MAX];
+
+	XYZ_point vertex[OBJECT_VERTEX_QUANTITY_MAX];
+	Edge 	  edge[OBJECT_EDGE_QUANTITY_MAX];
+
+	//Start position
+	float x_rotate_start;
+	float y_rotate_start;
+	float z_rotate_start;
+
+	//Current position
+	float x_rotate;
+	float y_rotate;
+	float z_rotate;
+
+	XYZ_point position;
+
+	//It needs to clean object
+	//int32_t x_min, x_max, y_min, y_max;
+
+} Object3d__HandleTypeDef;
+
+//
+void Object3d_InitBox(Object3d__HandleTypeDef* obj, int16_t center_x, int16_t center_y, int16_t center_z, int16_t width, int16_t depth, int16_t heigth);
+
+void Object3d_SetVertex(int32_t x, int32_t y, int32_t z, XYZ_point* point);
+void Object3d_SetEdge(XYZ_point* p1, XYZ_point* p2, Edge* e);
+
+void Object3d_DrawObject(Object3d__HandleTypeDef* obj);
+void Object3d_CleanObject(Object3d__HandleTypeDef* obj);
+void Object3d_DrawEdge(Object3d__HandleTypeDef* obj, uint8_t n);
+
+void Object3d_CalculateObject(Object3d__HandleTypeDef* obj);
+void Object3d_CalculateVertex(Object3d__HandleTypeDef* obj, uint8_t n);
+
+void Object3d_GetRealXY(XYZ_point* k, int16_t* x, int16_t* y);
+
+void Object3d_SetRotation(Object3d__HandleTypeDef* obj, float x_angle, float y_angle, float z_angle);
 void SetNewPointValue(XYZ_point* point, float x_angle, float y_angle, float z_angle);
 
 #endif /* DRIVER3D_H_ */

@@ -48,6 +48,9 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+#define CUBE_WIDTH  140
+#define CUBE_DEPTH  100
+#define CUBE_HEIGTH 40
 
 /* USER CODE END PV */
 
@@ -69,7 +72,7 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 
-	int8_t com_rslt;
+	//int8_t com_rslt;
 
 	float ax, ay, az;
 	float gx, gy, gz;
@@ -99,8 +102,9 @@ int main(void)
 
   I2Cdev_init(&hi2c1);
 
-  Cube3d_Init(CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
-  Draw3dCube(RED);
+  Object3d__HandleTypeDef box;
+  Object3d_InitBox(&box, 0, 0, 0, CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
+  //Draw3dCube(RED);
 
   LCD_Printf("Connecting to MPU9250...\n");
   //while(!MPU9250_testConnection());
@@ -110,7 +114,6 @@ int main(void)
   LCD_Printf("Connection successful!\n\n");
 
   Madgwick_init();
-  Cube3d_Init(CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
   last_time = HAL_GetTick();
 
  // HAL_Delay(2000);
@@ -123,16 +126,23 @@ int main(void)
 
   while (1)
   {
+
 	  MPU9250_getMotion9Real(&ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+
 	  current_time = HAL_GetTick();
-	  Madgwick_update(gx,gy,gz,ax,ay,az,mx,my,mz, (current_time -last_time)/1000.0);
+	  Madgwick_update(gx,gy,gz,ax,ay,az,mx,my,mz, (current_time - last_time)/1000.0);
+
 	  last_time = current_time;
-      LCD_SetCursor(0,310);
-      LCD_Printf("Madgwick: P: %5.1f R: %5.1f Y: %5.1f", Madgwick_getPitch(), Madgwick_getRoll(), Madgwick_getYaw());
-      Clean3dCube(BLACK);
-      SetCubePosition(Madgwick_getPitchRadians(), Madgwick_getRollRadians(), Madgwick_getYawRadians());
-      Draw3dCube(CUBE_COLOR);
+
+	  //LCD_SetCursor(0,310);
+      //LCD_Printf("Madgwick: P: %5.1f R: %5.1f Y: %5.1f", Madgwick_getPitch(), Madgwick_getRoll(), Madgwick_getYaw());
+
+      Object3d_CleanObject(&box);
+      Object3d_SetRotation(&box, Madgwick_getPitchRadians(), Madgwick_getRollRadians(), Madgwick_getYawRadians());
+      Object3d_DrawObject(&box);
+
       HAL_Delay(10);
+
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
