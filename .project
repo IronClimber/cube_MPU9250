@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>STM32F446_Cube3D_MPU9250</name>
+	<name>cube_MPU9250</name>
 	<comment />
 	<projects>
 	</projects>

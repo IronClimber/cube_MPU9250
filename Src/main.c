@@ -1,8 +1,7 @@
 /**
   ******************************************************************************
   * File Name          : main.c
-  * Description        : This program to show MPU9250 and Madgwick filter
-  * 					 works
+  * Description        : Main program body
   ******************************************************************************
   *
   * COPYRIGHT(c) 2016 STMicroelectronics
