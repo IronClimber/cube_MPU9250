@@ -38,8 +38,6 @@ void Object3d_InitBox(Object3d__HandleTypeDef* obj,	int16_t w, int16_t d, int16_
 	Object3d_SetBoxVertexes(obj);
 	Object3d_SetBoxEdges(obj);
 
-
-
 	Object3d_SetEdgesColor(obj, YELLOW);
 
 	obj->x_rotate_start = 0;
@@ -175,9 +173,6 @@ void Object3d_CleanEdge(Object3d__HandleTypeDef* obj, uint8_t n) {
 	LCD_DrawLine(x1, y1, x2, y2, BLACK);
 
 }
-
-
-
 
 XY_point Object3d_GetRealXY(XYZ_point* k) {
 
