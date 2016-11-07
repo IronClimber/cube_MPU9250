@@ -1,7 +1,8 @@
 /**
   ******************************************************************************
   * File Name          : main.c
-  * Description        : Main program body
+  * Description        : This program to show MPU9250 and Madgwick filter
+  * 					 works
   ******************************************************************************
   *
   * COPYRIGHT(c) 2016 STMicroelectronics
@@ -48,6 +49,7 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+
 #define CUBE_WIDTH  140
 #define CUBE_DEPTH  100
 #define CUBE_HEIGTH 40
@@ -71,8 +73,6 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
-	//int8_t com_rslt;
 
 	float ax, ay, az;
 	float gx, gy, gz;
@@ -103,8 +103,7 @@ int main(void)
   I2Cdev_init(&hi2c1);
 
   Object3d__HandleTypeDef box;
-  Object3d_InitBox(&box, 0, 0, 0, CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
-  //Draw3dCube(RED);
+  Object3d_InitBox(&box, CUBE_WIDTH, CUBE_DEPTH, CUBE_HEIGTH);
 
   LCD_Printf("Connecting to MPU9250...\n");
   //while(!MPU9250_testConnection());
@@ -115,9 +114,6 @@ int main(void)
 
   Madgwick_init();
   last_time = HAL_GetTick();
-
- // HAL_Delay(2000);
-
 
   /* USER CODE END 2 */
 
@@ -134,8 +130,8 @@ int main(void)
 
 	  last_time = current_time;
 
-	  //LCD_SetCursor(0,310);
-      //LCD_Printf("Madgwick: P: %5.1f R: %5.1f Y: %5.1f", Madgwick_getPitch(), Madgwick_getRoll(), Madgwick_getYaw());
+	  LCD_SetCursor(0,310);
+      LCD_Printf("Madgwick: P: %5.1f R: %5.1f Y: %5.1f", Madgwick_getPitch(), Madgwick_getRoll(), Madgwick_getYaw());
 
       Object3d_CleanObject(&box);
       Object3d_SetRotation(&box, Madgwick_getPitchRadians(), Madgwick_getRollRadians(), Madgwick_getYawRadians());

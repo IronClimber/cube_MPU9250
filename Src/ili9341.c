@@ -96,7 +96,7 @@ void LCD_Init(void) {
 	LCD_WriteRegister8(ILI9341_VCOMCONTROL2, 0xC0);
 
 	LCD_WriteRegister8(ILI9341_MEMCONTROL,
-				ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR); // change rotation here.
+			ILI9341_MADCTL_MX | ILI9341_MADCTL_BGR); // change rotation here.
 
 	LCD_WriteRegister8(ILI9341_PIXELFORMAT, 0x55);
 	LCD_WriteRegister16(ILI9341_FRAMECONTROL, 0x001B);
