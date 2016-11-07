@@ -176,6 +176,9 @@ void Object3d_CleanEdge(Object3d__HandleTypeDef* obj, uint8_t n) {
 
 }
 
+
+
+
 XY_point Object3d_GetRealXY(XYZ_point* k) {
 
 	XY_point k_real;
